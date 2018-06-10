@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LTAdvancedTestViewController.h"
 
-@interface LTHeaderView : UIView
+@interface LTHeaderView : UIView<TestTableViewProtocol>
 
 @end

@@ -21,9 +21,42 @@
 
 #define kIPhoneX ([UIScreen mainScreen].bounds.size.height == 812.0)
 
+@interface TestTableView()
+
+@end
+
+@implementation TestTableView
+
+- (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style
+{
+    self = [super initWithFrame:frame style:style];
+    if (self) {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] init];
+        tapGesture.delaysTouchesBegan = NO; ///< default NO
+        tapGesture.delaysTouchesEnded = NO; ///< default YES
+        [tapGesture addTarget:self action:@selector(p_tabGestureInvoked:)];
+        [self addGestureRecognizer:tapGesture];
+    }
+    return self;
+}
+
+- (void)p_tabGestureInvoked:(UITapGestureRecognizer *)sender{
+    NSLog(@"");
+    CGPoint location = [sender locationInView:self.headerView];
+    if (CGRectContainsPoint(self.headerView.bounds, location)) {
+        [self.headerView viewDidTap:self atPotin:location];
+        sender.cancelsTouchesInView = YES;
+    }else{
+        sender.cancelsTouchesInView = NO;
+    }
+    
+} 
+
+@end
+
 @interface LTAdvancedTestViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property(strong, nonatomic) UITableView *tableView;
+@property(strong, nonatomic) TestTableView *tableView;
 
 @property(assign, nonatomic) NSInteger totalCount;
 
@@ -87,7 +120,8 @@
 - (UITableView *)tableView {
     if (!_tableView) {
         CGFloat H = kIPhoneX ? (self.view.bounds.size.height - 64 - 24 - 34) : self.view.bounds.size.height - 64;
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, H) style:UITableViewStylePlain];
+        _tableView = [[TestTableView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, H) style:UITableViewStylePlain];
+        _tableView.headerView = self.headerView;
         _tableView.delegate = self;
         _tableView.dataSource = self;
     }
